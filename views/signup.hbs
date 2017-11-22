@@ -1,0 +1,18 @@
+<h2>Sign up for an account</h2>
+
+<ul>
+  {{#each messages}}
+    <li>{{this}}</li>
+  {{/each}}
+</ul>
+
+<form method="POST" action="/signup">
+  Username: <input name="username" />
+  Password: <input type="password" name="password" />
+
+  <input type="submit" name="signup" value="Sign up">
+</form>
+
+<P>If you already have an account, you can
+  <a href="/login">sign in here</a>.
+</P>
