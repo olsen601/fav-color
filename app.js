@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var passport = require('passport');
+var passportConfig = require('./config/passport')(passport);
 var flash = require('express-flash');
 var mongoose = require('mongoose');
 var MongoDBStore = require('connect-mongodb-session')(session);
@@ -15,6 +16,7 @@ var users = require('./routes/users');
 
 var app = express();
 
+//uses a stored system variable to connect to the database
 var mongo_url = process.env.MONGO_URL4;
 mongoose.Promise = global.Promise;
 mongoose.connect(mongo_url, { useMongoClient: true })
@@ -33,12 +35,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+//stores sessions or cookies in the database
 var store = new MongoDBStore( {uri : mongo_url, collection: 'sessions'}, function(err){
   if (err) {
     console.log('Error, can\'t conneect to MongoDB to store sessions', err);
   }
 });
 
+/*stores cookies with unique ids and in conjunction with passport
+stores the user connected to that cookie*/
 app.use(session({
   secret: 'replace with long random string',
   resave: true,
